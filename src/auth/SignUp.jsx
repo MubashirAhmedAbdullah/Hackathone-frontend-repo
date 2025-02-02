@@ -1,143 +1,155 @@
 import React, { useState } from 'react';
-import { Button, Input, Form, notification } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Card, Form, Input, Button, Typography, message, notification } from 'antd';
+import { LockOutlined, IdcardOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import Cookies from 'js-cookie'; // Import js-cookie
-import { AppRoutes } from '../constant/constant';
+import { AppRoutes } from '../constants/constant';
+import { useNavigate } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom'; // Import useHistory for redirection
 
-const SignUpPage = () => {
-    const [form] = Form.useForm();
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate(); // Ensure useNavigate is correctly initialized
 
-    const handleSubmit = async (values) => {
-    setLoading(true);
-    try {
-        // Replace with the correct URL for your backend
-        const response = await axios.post(AppRoutes.signup, values);
 
-        // Debugging: Log the response to verify its structure
-        console.log('Backend Response:', response);
+const { Title, Paragraph } = Typography;
 
-        // Check if the token exists in the response
-        const { token, user } = response.data.data || {}; // Use optional chaining and fallback
-        if (token) {
-            // Save token and user data to localStorage and Cookies
-            localStorage.setItem('user', JSON.stringify(user)); // Save user data in localStorage
-            localStorage.setItem('authToken', token); // Save token in localStorage
-            Cookies.set('authToken', token, { expires: 7 }); // Set token to expire in 7 days in cookies
+const Signup = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+   // const history = useHistory(); // History hook for redirection
 
-            // Show success toast notification
-            notification.success({
-                message: 'Success',
-                description: 'User is successfully signed up!',
-                placement: 'topRight',
-                duration: 3, // Duration of the toast
-            });
-
-            // Wait for a moment to let the user see the notification before redirecting
-            setTimeout(() => {
-                navigate('/'); // Redirect to home after the notification
-            }, 1500); // 1.5-second delay to show the toast before navigating
-        } else {
-            // Handle missing token case
-            throw new Error('Token not found in response. Please check the backend.');
-        }
-    } catch (error) {
-        console.error('Error during signup:', error);
-
-        // Show error toast notification if the signup fails
-        notification.error({
-            message: 'Error',
-            description: error.response?.data?.message || 'An error occurred while signing up. Please try again.',
-            placement: 'topRight',
-            duration: 3, // Duration of the error toast
-        });
-    } finally {
-        setLoading(false); // Stop the loading indicator
+  const onFinish = async (values) => {
+    if (values.password !== values.confirmPassword) {
+      message.error('Passwords do not match!');
+      return;
     }
-};
+    setLoading(true);
 
+    console.log('values==>', values);
 
-    return (
-        <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-            <div className="bg-white p-10 rounded-lg shadow-lg max-w-md w-full">
-                <h2 className="text-3xl font-bold text-center text-green-600 mb-6">Create Your Account</h2>
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={handleSubmit}
-                    className="space-y-8" // Increased spacing between form elements
-                >
-                    {/* Name Input */}
-                    <Form.Item
-                        label="Name"
-                        name="name"
-                        rules={[{ required: true, message: 'Please input your name!' }]}
-                    >
-                        <Input placeholder="Enter your name" style={{ height: '50px', fontSize: '16px' }} />
-                    </Form.Item>
+    try {
+      // Send a POST request to your backend API
+      const response = await axios.post(AppRoutes.signup, {
+        name: values.name,
+        email: values.email,
+        cnic: values.cnic,
+        password: values.password,
+      });
 
-                    {/* Email Input */}
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[
-                            { required: true, message: 'Please input your email!' },
-                            { type: 'email', message: 'Please input a valid email!' }
-                        ]}
-                    >
-                        <Input placeholder="Enter your email" style={{ height: '50px', fontSize: '16px' }} />
-                    </Form.Item>
+      console.log('response==>', response);
 
-                    {/* CNIC Input */}
-                    <Form.Item
-                        label="CNIC"
-                        name="cnic"
-                        rules={[{ required: true, message: 'Please input your CNIC!' }]}
-                    >
-                        <Input placeholder="Enter your CNIC" style={{ height: '50px', fontSize: '16px' }} />
-                    </Form.Item>
+      setLoading(false);
+      if (response.status === 201) {
+        // Save the JWT token to localStorage
+        const token = response.data.data.token; // Assuming the token is returned as 'token'
+        const user = {
+          name: values.name,
+          email: values.email,
+          cnic: values.cnic,
+        };
 
-                    {/* Password Input */}
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[{ required: true, message: 'Please input your password!' }]}
-                    >
-                        <Input.Password placeholder="Enter your password" style={{ height: '50px', fontSize: '16px' }} />
-                    </Form.Item>
+        // Save both the JWT token and user data to localStorage
+        localStorage.setItem('jwtToken', token);
+        localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
 
-                    {/* Sign Up Button */}
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        block
-                        loading={loading}
-                        style={{
-                            backgroundColor: '#8ac642',
-                            borderColor: '#8ac642',
-                            fontWeight: 'bold',
-                            height: '50px', // Increased height
-                            fontSize: '18px', // Increased font size
-                        }}
-                    >
-                        Sign Up
-                    </Button>
-                </Form>
+        notification.success({
+          message: "signUp sucessfully"
+        })
+        navigate("/user/dashboard")
+      } else {
+        message.error('Something went wrong, please try again.');
+      }
+    } catch (error) {
+      setLoading(false);
 
-                {/* Already have an account Link */}
-                <div className="mt-6 text-center">
-                    <span className="text-sm text-gray-600">
-                        Already have an account?{' '}
-                        <Link to="/login" className="text-green-600 font-semibold hover:underline">
-                            Login Here
-                        </Link>
-                    </span>
-                </div>
-            </div>
+      // Check for user already exists error
+      if (error.response && error.response.status === 403) {
+        // If the error status is 403 (Forbidden - User already exists)
+        notification.error({
+          message: 'Sign Up Failed',
+          description: 'User with this email or CNIC already exists.',
+          placement: 'topRight',
+        });
+      } else {
+        // General error message
+        notification.error({
+          message: 'Sign Up Failed',
+          description: error.response ? error.response.data.message : 'An error occurred. Please try again.',
+          placement: 'topRight',
+        });
+      }
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-screen p-6 bg-gray-100">
+      <Card className="shadow-2xl w-full max-w-md rounded-lg p-8 border border-gray-200 bg-white">
+        <div className="text-center mb-6">
+          <Title level={1} className="text-[#0072BB] font-normal">
+            <span className="text-[#8AC441] underline">Create</span> <span className="text-[#0072BB] underline">Account</span>
+          </Title>
+          <Paragraph className="text-gray-600">
+            <span className="text-base">Sign up by providing the required details</span>
+          </Paragraph>
         </div>
-    );
+        <Form name="signup" layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            name="name"
+            label={<span className="text-gray-700 text-lg">Full Name</span>}
+            rules={[{ required: true, message: 'Please enter your name!' }]}
+          >
+            <Input prefix={<UserOutlined className="text-lg" />} placeholder="Enter Full Name" className="rounded-md p-3 text-lg border-gray-300" />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label={<span className="text-gray-700 text-lg">Email</span>}
+            rules={[{ required: true, type: 'text', message: 'Please enter a valid email!' }]}
+          >
+            <Input prefix={<MailOutlined className="text-lg" />} placeholder="Enter Email" className="rounded-md p-3 text-lg border-gray-300" />
+          </Form.Item>
+          <Form.Item
+            name="cnic"
+            label={<span className="text-gray-700 text-lg">CNIC</span>}
+            rules={[{ required: true, message: 'Please enter your CNIC!' }]}
+          >
+            <Input prefix={<IdcardOutlined className="text-lg" />} placeholder="Enter CNIC (e.g. 42101-1234567-1)" className="rounded-md p-3 text-lg border-gray-300" />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label={<span className="text-gray-700 text-lg">Password</span>}
+            rules={[{ required: true, message: 'Please enter your password!' }]}
+          >
+            <Input.Password prefix={<LockOutlined className="text-lg" />} placeholder="Enter Password" className="rounded-md p-3 text-lg border-gray-300" />
+          </Form.Item>
+          <Form.Item
+            name="confirmPassword"
+            label={<span className="text-gray-700 text-lg">Confirm Password</span>}
+            rules={[{ required: true, message: 'Please confirm your password!' }]}
+          >
+            <Input.Password prefix={<LockOutlined className="text-lg" />} placeholder="Confirm Password" className="rounded-md p-3 text-lg border-gray-300" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              style={{ fontSize: '20px', height: '40px' }}
+              className="bg-[#0072BB] hover:bg-[#005f8c] transition duration-300 ease-in-out text-white py-3 rounded-md"
+            >
+              {loading ? 'Signing Up...' : 'Sign Up'}
+            </Button>
+            <div className="text-center mt-3">
+              <Button
+                type="link"
+                style={{ fontSize: '15px' }}
+                onClick={() => history.push('/login')} // Redirect to login page
+              >
+                Already have an Account?
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Card>
+    </div>
+  );
 };
 
-export default SignUpPage;
+export default Signup;

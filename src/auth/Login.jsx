@@ -1,135 +1,133 @@
 import React, { useState } from 'react';
-import { Button, Input, Form, notification } from 'antd';
+import { Card, Form, Input, Button, Checkbox, Typography, notification } from 'antd';
+import { LockOutlined, IdcardOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { AppRoutes } from '../constant/constant';  // Your routes for API calls
+import { AppRoutes } from '../constants/constant';
 
-const LoginPage = () => {
-  const [form] = Form.useForm();
+const { Title, Paragraph } = Typography;
+
+const Login = () => {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize the navigation hook
+  const navigate = useNavigate();
 
-  const handleSubmit = async (values) => {
+  const onFinish = async (values) => {
     setLoading(true);
+    console.log("values==>", values);
+
     try {
-      // Direct login request without email existence check
-      const loginResponse = await axios.post(AppRoutes.login, values);
+      const response = await axios.post(AppRoutes.login, {
+        cnic: values.cnic,
+        password: values.password
+      });
 
-      // Debug log to see the response structure
-      console.log("Login Response:", loginResponse);
+      console.log("response==>", response);
+      setLoading(false);
 
-      if (loginResponse.status === 200) {
-        // Assuming the backend returns a token and user data
-        const { token, user } = loginResponse.data;
+      if (response.status === 404) {
+        notification.error({
+          message: "User is not registered",
+        });
+        return;
+      }
 
-        if (token && user) {
-          // Save the token in localStorage (if you need session management)
-          localStorage.setItem('authToken', token);
+      if (response.status === 403) {
+        notification.error({
+          message: "Invalid Credentials",
+        });
+        return;
+      }
 
-          // Save the user data in localStorage
-          localStorage.setItem('user', JSON.stringify(user)); // Store user data in localStorage
+      localStorage.setItem("jwtToken", response.data.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.data.user));
 
-          // Show success notification
-          notification.success({
-            message: 'Success',
-            description: 'You have successfully logged in!',
-            placement: 'topRight',
-            duration: 3,
-          });
+      notification.success({
+        message: "Login Successful",
+      });
 
-          // Redirect to home page
-          navigate('/');  // Reduced the delay before redirecting for a faster user experience
-        } else {
-          // If token or user is missing in the response, show an error
+      navigate("/user/dashboard");
+
+    } catch (err) {
+      setLoading(false);
+      console.log("err==>", err);
+
+      if (err.response) {
+        if (err.response.status === 404) {
           notification.error({
-            message: 'Error',
-            description: 'Missing token or user data. Please try again.',
-            placement: 'topRight',
-            duration: 3,
+            message: "User is not registered",
+          });
+        } else if (err.response.status === 403) {
+          notification.error({
+            message: "Invalid Credentials",
+          });
+        } else {
+          notification.error({
+            message: "An error occurred. Please try again.",
           });
         }
       } else {
-        // Incorrect credentials
         notification.error({
-          message: 'Invalid credentials',
-          description: 'Incorrect email or password. Please try again.',
-          placement: 'topRight',
-          duration: 3,
+          message: "Network error. Please check your connection.",
         });
       }
-    } catch (error) {
-      console.error('Error during login process:', error);
-
-      // General error notification in case something goes wrong
-      notification.error({
-        message: 'Error',
-        description: 'An error occurred during the login process. Please try again.',
-        placement: 'topRight',
-        duration: 3,
-      });
-    } finally {
-      setLoading(false); // Stop loading
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-      <div className="bg-white p-10 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-3xl font-bold text-center text-green-600 mb-6">Login to Your Account</h2>
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          className="space-y-8" // Increased spacing between elements
-        >
-          {/* Email Input */}
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please input a valid email!' }]}
-          >
-            <Input placeholder="Enter your email" style={{ height: '50px', fontSize: '16px' }} />
-          </Form.Item>
-
-          {/* Password Input */}
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
-            <Input.Password placeholder="Enter your password" style={{ height: '50px', fontSize: '16px' }} />
-          </Form.Item>
-
-          {/* Login Button */}
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            loading={loading}
-            style={{
-              backgroundColor: '#8ac642',
-              borderColor: '#8ac642',
-              fontWeight: 'bold',
-              height: '50px', // Increased button height
-              fontSize: '18px', // Increased button text size
-            }}
-          >
-            Login
-          </Button>
-        </Form>
-
-        {/* Create Account Link */}
-        <div className="mt-6 text-center">
-          <span className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/signup" className="text-green-600 font-semibold hover:underline">
-              Create an Account
-            </Link>
-          </span>
+    <div className="flex justify-center items-center min-h-screen p-6 bg-gray-100">
+      <Card className="shadow-2xl w-full max-w-md rounded-lg p-8 border border-gray-200 bg-white">
+        <div className="text-center mb-6">
+          <Title level={1} className="text-[#0072BB] font-normal">
+            <span className='text-[#8AC441] underline'>Welcome</span> 
+            <span className='text-[#0072BB] underline'> Back</span>
+          </Title>
+          <Paragraph className="text-gray-600">
+            <span className='text-base'>Login using your CNIC and password to continue</span>
+          </Paragraph>
         </div>
-      </div>
+        <Form name="login" layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            name="cnic"
+            label={<span className="text-gray-700 text-lg">CNIC</span>}
+            rules={[{ required: true, message: 'Please enter your CNIC!' }]}
+          >
+            <Input prefix={<IdcardOutlined className="text-lg" />} placeholder="Enter CNIC (e.g. 42101-1234567-1)" className="rounded-md p-3 text-lg border-gray-300" />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label={<span className="text-gray-700 text-lg">Password</span>}
+            rules={[{ required: true, message: 'Please enter your password!' }]}
+          >
+            <Input.Password prefix={<LockOutlined className="text-lg" />} placeholder="Enter Password" className="rounded-md p-3 text-lg border-gray-300" />
+          </Form.Item>
+          <Form.Item>
+            <div className="flex justify-between items-center">
+              <Checkbox className="text-gray-700 text-lg">Remember Me</Checkbox>
+              <a className="text-[#0072BB] hover:underline text-lg">Forgot Password?</a>
+            </div>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              style={{ fontSize: "20px", height: "40px" }}
+              className="bg-[#0072BB] hover:bg-[#005f8c] transition duration-300 ease-in-out text-white py-3 rounded-md"
+            >
+              Login
+            </Button>
+
+            <div className='text-center mt-3'>
+              <Link to={"/signUp"}>
+                <Button type='link' style={{ fontSize: "15px" }}> Don't have an Account?</Button>
+              </Link>
+            </div>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 };
 
-export default LoginPage;
+export default Login;

@@ -1,25 +1,37 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import './App.css';
-import Home from "./pages/landingPage";
-import LoginPage from "./auth/Login";
-import SignUpPage from "./auth/SignUp";
-import LoanApplicationForm from "./pages/loanform";
-import UserLoans from "./pages/requestedLoans";
-
-
+import { Route, Routes } from 'react-router-dom'
+import Home from './pages/home'
+import Navbar from './pages/generalPagesLayout/navbar'
+import AboutUs from './pages/aboutUs'
+import Services from './pages/services'
+import ContactUs from './pages/contactUs'
+import Login from './auth/login'
+import Signup from './auth/signUp'
+import UserNavbar from './user/userLayout/userLayout'
+import UserDashboard from './user/userDashboard'
+import UserLoans from './user/userLoans'
+import LoanDetails from './user/loanDetailsPage'
 function App() {
 
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Home />}/>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/applyloan" element={<LoanApplicationForm />}/>
-        <Route path="/userloans" element={<UserLoans />} />
-      </Routes>
-    </>
-  );
+    <Routes>
+      <Route path='/' element={<Navbar />} >
+        <Route path='/' element={<Home />} />
+        <Route path='aboutUs' element={<AboutUs />} />
+        <Route path='services' element={<Services />} />
+        <Route path='contactUs' element={<ContactUs />} />
+      </Route>
+
+      <Route path="/login" element={<Login />} />
+      <Route path='/signUp' element={<Signup />} />
+
+
+      <Route path='/user' element={<UserNavbar />}>
+        <Route path='dashboard' element={<UserDashboard />} />
+        <Route path='myloans' element={<UserLoans />} />
+        <Route path='loandetails/:id' element={<LoanDetails />} />
+      </Route>
+    </Routes>
+  )
 }
 
-export default App;
+export default App

@@ -1,59 +1,55 @@
 import React from 'react';
+import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { Image } from 'antd';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
-  return (
-    <footer className="py-8 mt-16 border-t-2 bg-gray-100">
-      <div className="container mx-auto px-6 lg:px-10 flex flex-col lg:flex-row justify-between items-center">
+    return (
+        <footer className="bg-gray-900 text-white py-8 px-6 md:px-16 lg:px-32">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
+                <div>
+                    <Image src='https://www.saylaniwelfare.com/static/media/logo_saylaniwelfare.22bf709605809177256c.png' preview={false} className="w-32 mx-auto md:mx-0" />
+                    <p className="mt-4 text-gray-400 text-sm">
+                        Saylani Welfare International Trust is committed to serving humanity by providing food, education, healthcare, and employment opportunities.
+                    </p>
+                </div>
 
-        {/* Logo Section */}
-        <div className="mb-8 lg:mb-0">
-          <Image
-            src="https://www.saylaniwelfare.com/static/media/logo_saylaniwelfare.22bf709605809177256c.png"
-            alt="System Logo"
-            preview={false}
-            width={400}
-            height="auto"
-          />
-        </div>
+                {/* Quick Links */}
+                <div>
+                    <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
+                    <ul className="space-y-2 text-gray-400">
+                        <li><Link to={"aboutUs"} className="hover:text-blue-400">About Us</Link></li>
+                        <li><Link to={"services"}  className="hover:text-blue-400">Our Services</Link></li>
+                        <li><Link to={"https://saylaniwelfare.com/donate"} className="hover:text-blue-400">Donate</Link></li>
+                    </ul>
+                </div>
 
-        {/* Links Section */}
-        <div className="mb-8 lg:mb-0 space-y-4 lg:flex lg:space-x-12 lg:space-y-0">
-          <div>
-            <h3 className="text-lg font-semibold">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><a href="#" className="hover:text-gray-300">Home</a></li>
-              <li><a href="#" className="hover:text-gray-300">About Us</a></li>
-              <li><a href="#" className="hover:text-gray-300">Contact</a></li>
-              <li><a href="#" className="hover:text-gray-300">Services</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">Support</h3>
-            <ul className="space-y-2">
-              <li><a href="#" className="hover:text-gray-300">FAQ</a></li>
-              <li><a href="#" className="hover:text-gray-300">Terms & Conditions</a></li>
-              <li><a href="#" className="hover:text-gray-300">Privacy Policy</a></li>
-            </ul>
-          </div>
-        </div>
+                {/* Social Media */}
+                <div>
+                    <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
+                    <div className="flex justify-center md:justify-start space-x-4">
+                        <a href="https://www.facebook.com/SaylaniWelfare" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 text-xl">
+                            <FaFacebookF />
+                        </a>
+                        <a href="https://twitter.com/SaylaniWelfare" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 text-xl">
+                            <FaTwitter />
+                        </a>
+                        <a href="https://www.instagram.com/SaylaniWelfare" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 text-xl">
+                            <FaInstagram />
+                        </a>
+                        <a href="https://www.youtube.com/SaylaniWelfare" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 text-xl">
+                            <FaYoutube />
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-        {/* Organization Details Section */}
-        <div className="text-center lg:text-left">
-          <h3 className="text-lg font-semibold">Organization Info</h3>
-          <p className="text-sm mt-2">Saylani Welfare International Trust</p>
-          <p className="text-sm">1234 Finance Street, City, Country</p>
-          <p className="text-sm">Contact: (123) 456-7890</p>
-          <p className="text-sm">Email: info@finance.org</p>
-        </div>
-      </div>
-
-      {/* Footer Bottom Section */}
-      <div className="text-center text-sm mt-8">
-        <p>© 2025 Saylani Welfare International Trust. All rights reserved.</p>
-      </div>
-    </footer>
-  );
+            {/* Copyright */}
+            <div className="text-center text-gray-500 text-sm mt-6 border-t border-gray-700 pt-4">
+                © {new Date().getFullYear()} Saylani Welfare International Trust. All Rights Reserved.
+            </div>
+        </footer>
+    );
 };
 
 export default Footer;
