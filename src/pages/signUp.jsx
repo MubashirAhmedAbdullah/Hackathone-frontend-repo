@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Card, Form, Input, Button, Typography, message, notification } from 'antd';
 import { LockOutlined, IdcardOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { AppRoutes } from '../constants/constant';
 import { useNavigate } from 'react-router-dom';
+import { AppRoutes } from '../constants/constant';
 // import { useHistory } from 'react-router-dom'; // Import useHistory for redirection
 
 
