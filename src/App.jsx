@@ -8,6 +8,8 @@ import UserNavbar from './user/userLayout/userLayout'
 import UserDashboard from './user/userDashboard'
 import UserLoans from './user/userLoans'
 import LoanDetails from './user/loanDetailsPage'
+import Login from './auth/login'
+import Signup from './authentication/signUp'
 function App() {
 
   return (
