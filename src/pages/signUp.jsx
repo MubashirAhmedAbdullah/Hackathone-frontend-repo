@@ -69,6 +69,9 @@ const Signup = () => {
         });
       } else {
         // General error message
+
+        console.log("error===>", error);
+        
         notification.error({
           message: 'Sign Up Failed',
           description: error.response ? error.response.data.message : 'An error occurred. Please try again.',
