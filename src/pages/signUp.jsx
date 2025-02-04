@@ -36,7 +36,7 @@ const Signup = () => {
       console.log('response==>', response);
 
       setLoading(false);
-      if (response.status === 201) {
+      if (response.status === 200) {
         // Save the JWT token to localStorage
         const token = response.data.data.token; // Assuming the token is returned as 'token'
         const user = {
