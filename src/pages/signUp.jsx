@@ -70,7 +70,7 @@ const Signup = () => {
       } else {
         // General error message
 
-        console.log("error===>", error.response.status);
+        console.log("error===>", error.response);
         
         notification.error({
           message: 'Sign Up Failed',
