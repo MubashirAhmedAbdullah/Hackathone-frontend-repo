@@ -60,7 +60,7 @@ const Signup = () => {
       setLoading(false);
 
       // Check for user already exists error
-      if (error.response && error.response.status === 403) {
+      if (response.status === 403) {
         // If the error status is 403 (Forbidden - User already exists)
         notification.error({
           message: 'Sign Up Failed',
@@ -69,8 +69,6 @@ const Signup = () => {
         });
       } else {
         // General error message
-
-        console.log("error===>", error.response);
         
         notification.error({
           message: 'Sign Up Failed',
