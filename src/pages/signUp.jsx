@@ -92,121 +92,67 @@ const Signup = () => {
   // };
 
 
-//   const onFinish = async (values) => {
-//     if (values.password !== values.confirmPassword) {
-//         message.error('Passwords do not match!');
-//         return;
-//     }
-//     setLoading(true);
+  const onFinish = async (values) => {
+    if (values.password !== values.confirmPassword) {
+        message.error('Passwords do not match!');
+        return;
+    }
+    setLoading(true);
 
-//     console.log('values==>', values);
+    console.log('values==>', values);
 
-//     try {
-//         // Send a POST request using fetch
-//         const response = await fetch(AppRoutes.signup, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({
-//                 name: values.name,
-//                 email: values.email,
-//                 cnic: values.cnic,
-//                 password: values.password,
-//             }),
-//         });
+    try {
+        // Send a POST request using fetch
+        const response = await fetch(AppRoutes.signup, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: values.name,
+                email: values.email,
+                cnic: values.cnic,
+                password: values.password,
+            }),
+        });
 
-//         const data = await response.json();
-//         console.log('response==>', data);
+        const data = await response.json();
+        console.log('response==>', data);
 
-//         setLoading(false);
+        setLoading(false);
 
-//         if (response.status === 200) {
-//             const token = data.data.token;
-//             const user = {
-//                 name: values.name,
-//                 email: values.email,
-//                 cnic: values.cnic,
-//             };
+        if (response.status === 200) {
+            const token = data.data.token;
+            const user = {
+                name: values.name,
+                email: values.email,
+                cnic: values.cnic,
+            };
 
-//             localStorage.setItem('jwtToken', token);
-//             localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
+            localStorage.setItem('jwtToken', token);
+            localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
 
-//             notification.success({
-//                 message: 'Sign Up Successfully',
-//             });
-//             navigate('/user/dashboard');
-//         } else if (response.status === 403) {
-//             notification.error({
-//                 message: 'Sign Up Failed',
-//                 description: data.msg || 'User with this email or CNIC already exists.',
-//                 placement: 'topRight',
-//             });
-//         } else {
-//             message.error('Something went wrong, please try again.');
-//         }
-//     } catch (error) {
-//         setLoading(false);
-//         notification.error({
-//             message: 'Registration Failed',
-//             description: error.message || 'An unexpected error occurred.',
-//             placement: 'topRight',
-//         });
-//     }
-// };
-
-
-const onFinish = async (values) => {
-  if (values.password !== values.confirmPassword) {
-      message.error('Passwords do not match!');
-      return;
-  }
-  setLoading(true);
-
-  console.log('values==>', values);
-
-  const response = await fetch(AppRoutes.signup, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          cnic: values.cnic,
-          password: values.password,
-      }),
-  });
-
-  const data = await response.json();
-  console.log('response==>', data);
-
-  setLoading(false);
-
-  if (response.status === 200) {
-      const token = data.data.token;
-      const user = {
-          name: values.name,
-          email: values.email,
-          cnic: values.cnic,
-      };
-
-      localStorage.setItem('jwtToken', token);
-      localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
-
-      notification.success({
-          message: 'Sign Up Successfully',
-      });
-      navigate('/user/dashboard');
-  } else if (response.status === 403) {
-      notification.error({
-          message: 'Sign Up Failed',
-          description: data.msg || 'User with this email or CNIC already exists.',
-          placement: 'topRight',
-      });
-  } else {
-      message.error('Something went wrong, please try again.');
-  }
+            notification.success({
+                message: 'Sign Up Successfully',
+            });
+            navigate('/user/dashboard');
+        } else if (response.status === 403) {
+            notification.error({
+                message: 'Sign Up Failed',
+                description: data.msg || 'User with this email or CNIC already exists.',
+                placement: 'topRight',
+            });
+        } else {
+            message.error('Something went wrong, please try again.');
+        }
+    } catch (error) {
+        setLoading(false);
+        notification.error({
+            message: 'Registration Failed',
+            description: error.message || 'An unexpected error occurred.',
+            placement: 'topRight',
+        });
+    }
 };
 
   return (
