@@ -13,83 +13,147 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
 
+  // const onFinish = async (values) => {
+  //   if (values.password !== values.confirmPassword) {
+  //     message.error('Passwords do not match!');
+  //     return;
+  //   }
+  //   setLoading(true);
+
+  //   console.log('values==>', values);
+
+  //   try {
+  //     // Send a POST request to your backend API
+  //     const response = await axios.post(AppRoutes.signup, {
+  //       name: values.name,
+  //       email: values.email,
+  //       cnic: values.cnic,
+  //       password: values.password,
+  //     });
+
+  //     console.log('response==>', response);
+
+
+  //     setLoading(false)
+  //     if (response.status === 200) {
+  //       const token = response.data.data.token;
+  //       const user = {
+  //         name: values.name,
+  //         email: values.email,
+  //         cnic: values.cnic,
+  //       };
+
+  //       localStorage.setItem('jwtToken', token);
+  //       localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
+
+  //       notification.success({
+  //         message: "signUp sucessfully"
+  //       })
+  //       navigate("/user/dashboard")
+  //     }
+
+  //     // if (response.status === 403) {
+  //     //   // If the error status is 403 (Forbidden - User already exists)
+  //     //   notification.error({
+  //     //     message: 'Sign Up Failed',
+  //     //     description: 'User with this email or CNIC already exists.',
+  //     //     placement: 'topRight',
+  //     //   });
+  //     //   setLoading(false)
+  //     // }
+
+  //     // setLoading(false);
+  //     // if (response.status === 200) {
+  //     //   // Save the JWT token to localStorage
+  //     //   const token = response.data.data.token; // Assuming the token is returned as 'token'
+  //     //   const user = {
+  //     //     name: values.name,
+  //     //     email: values.email,
+  //     //     cnic: values.cnic,
+  //     //   };
+
+  //     //   // Save both the JWT token and user data to localStorage
+  //     //   localStorage.setItem('jwtToken', token);
+  //     //   localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
+
+  //     //   notification.success({
+  //     //     message: "signUp sucessfully"
+  //     //   })
+  //     //   navigate("/user/dashboard")
+  //     // } else {
+  //     //   message.error('Something went wrong, please try again.');
+  //     // }
+  //   } catch (error) {
+  //     setLoading(false);
+      
+  //     if (error.status === 403) { notification.error({ message: "Registration Failed", description: error.response.data.msg, placement: "topRight" }) }
+  //     if (error.status === 500) { notification.error({ message: "Registration Failed", description: error.response.data.msg, placement: "topRight" }) }
+  //   }
+  // };
+
+
   const onFinish = async (values) => {
     if (values.password !== values.confirmPassword) {
-      message.error('Passwords do not match!');
-      return;
+        message.error('Passwords do not match!');
+        return;
     }
     setLoading(true);
 
     console.log('values==>', values);
 
     try {
-      // Send a POST request to your backend API
-      const response = await axios.post(AppRoutes.signup, {
-        name: values.name,
-        email: values.email,
-        cnic: values.cnic,
-        password: values.password,
-      });
+        // Send a POST request using fetch
+        const response = await fetch(AppRoutes.signup, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: values.name,
+                email: values.email,
+                cnic: values.cnic,
+                password: values.password,
+            }),
+        });
 
-      console.log('response==>', response);
+        const data = await response.json();
+        console.log('response==>', data);
 
+        setLoading(false);
 
-      setLoading(false)
-      if (response.status === 200) {
-        const token = response.data.data.token;
-        const user = {
-          name: values.name,
-          email: values.email,
-          cnic: values.cnic,
-        };
+        if (response.status === 200) {
+            const token = data.data.token;
+            const user = {
+                name: values.name,
+                email: values.email,
+                cnic: values.cnic,
+            };
 
-        localStorage.setItem('jwtToken', token);
-        localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
+            localStorage.setItem('jwtToken', token);
+            localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
 
-        notification.success({
-          message: "signUp sucessfully"
-        })
-        navigate("/user/dashboard")
-      }
-
-      // if (response.status === 403) {
-      //   // If the error status is 403 (Forbidden - User already exists)
-      //   notification.error({
-      //     message: 'Sign Up Failed',
-      //     description: 'User with this email or CNIC already exists.',
-      //     placement: 'topRight',
-      //   });
-      //   setLoading(false)
-      // }
-
-      // setLoading(false);
-      // if (response.status === 200) {
-      //   // Save the JWT token to localStorage
-      //   const token = response.data.data.token; // Assuming the token is returned as 'token'
-      //   const user = {
-      //     name: values.name,
-      //     email: values.email,
-      //     cnic: values.cnic,
-      //   };
-
-      //   // Save both the JWT token and user data to localStorage
-      //   localStorage.setItem('jwtToken', token);
-      //   localStorage.setItem('user', JSON.stringify(user)); // Store user data as a string
-
-      //   notification.success({
-      //     message: "signUp sucessfully"
-      //   })
-      //   navigate("/user/dashboard")
-      // } else {
-      //   message.error('Something went wrong, please try again.');
-      // }
+            notification.success({
+                message: 'Sign Up Successfully',
+            });
+            navigate('/user/dashboard');
+        } else if (response.status === 403) {
+            notification.error({
+                message: 'Sign Up Failed',
+                description: data.msg || 'User with this email or CNIC already exists.',
+                placement: 'topRight',
+            });
+        } else {
+            message.error('Something went wrong, please try again.');
+        }
     } catch (error) {
-      setLoading(false);
-      
-      if (error.status === 403) { notification.error({ message: "Registration Failed", description: error.response.data.msg, placement: "topRight" }) }
-      if (error.status === 500) { notification.error({ message: "Registration Failed", description: error.response.data.msg, placement: "topRight" }) }
+        setLoading(false);
+        notification.error({
+            message: 'Registration Failed',
+            description: error.message || 'An unexpected error occurred.',
+            placement: 'topRight',
+        });
     }
-  };
+};
 
   return (
     <div className="flex justify-center items-center min-h-screen p-6 bg-gray-100">
