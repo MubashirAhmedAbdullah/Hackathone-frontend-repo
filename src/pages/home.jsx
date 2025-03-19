@@ -1,5 +1,6 @@
 import { Image } from "antd"
 import LoanCards from "../components/loanData"
+import { Link } from "react-router-dom"
 
 function Home() {
     return (
@@ -20,12 +21,16 @@ function Home() {
                         Turning aspirations into achievements by providing the financial support you need.
                     </p>
                     <div className="mt-8">
-                        <button className="bg-[#8AC441] text-white px-6 py-3 rounded-2xl font-medium shadow-lg hover:bg-[#76ad39] transition">
-                            Apply Now
-                        </button>
+                        <Link to={"/user/dashboard"}>
+                            <button className="bg-[#8AC441] text-white px-6 py-3 rounded-2xl font-medium shadow-lg hover:bg-[#76ad39] transition">
+                                Apply Now
+                            </button>
+                        </Link>
+                        <Link to={"/aboutUs"}>
                         <button className="ml-4 bg-[#0072BB] text-white px-6 py-3 rounded-2xl font-medium shadow-lg hover:bg-[#005b93] transition">
                             Learn More About Saylani
                         </button>
+                        </Link>
                     </div>
                 </div>
 
@@ -57,7 +62,7 @@ function Home() {
                             className="rounded-2xl" />
                     </div>
                     <div className="max-w-3xl text-lg font-semibold text-center">
-                        <Image src="https://www.saylaniwelfare.com/static/media/logo_saylaniwelfare.22bf709605809177256c.png" preview={false}/>
+                        <Image src="https://www.saylaniwelfare.com/static/media/logo_saylaniwelfare.22bf709605809177256c.png" preview={false} />
                         <div>Allama Bashir Farooqi, the founder and chairman of Saylani Welfare International Trust, aims to eradicate poverty by providing free food, healthcare, education, and skill development to underprivileged communities. His vision is to empower the youth and create financially independent individuals through world-class education and IT training programs, ultimately uplifting the socio-economic condition of Pakistan.</div>
                     </div>
                 </div>

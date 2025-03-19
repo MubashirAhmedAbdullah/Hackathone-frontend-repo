@@ -21,44 +21,46 @@ const Login = () => {
         password: values.password
       });
 
-      console.log("response==>", response);
+      console.log("response===>", response);
       setLoading(false);
-
-      if (response.status === 404) {
-        notification.error({
-          message: "User is not registered",
-        });
-        return;
-      }
 
       if (response.status === 403) {
         notification.error({
           message: "Invalid Credentials",
+          description: "The CNIC or password is incorrect.",
         });
         return;
       }
 
+      if (response.status === 404) {
+        notification.error({
+          message: "You Are Not Registered",
+        });
+        return;
+      }
+
+      // Save JWT token and user data to localStorage
       localStorage.setItem("jwtToken", response.data.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.data.user));
 
       notification.success({
-        message: "Login Successful",
+        message: response.data.msg || "Login Successful",
       });
 
-      navigate("/user/dashboard");
+      navigate("/user/dashboard"); // Redirect to the home page or user dashboard
 
     } catch (err) {
       setLoading(false);
-      console.log("err==>", err);
+      console.log("error===>", err);
 
       if (err.response) {
-        if (err.response.status === 404) {
+        if (err.response.status === 500) {
           notification.error({
-            message: "User is not registered",
+            message: "Internal Server Error Try Again",
           });
-        } else if (err.response.status === 403) {
+        } else if (err.response.status === 404) {
           notification.error({
-            message: "Invalid Credentials",
+            message: "User Not Found",
           });
         } else {
           notification.error({
@@ -78,7 +80,7 @@ const Login = () => {
       <Card className="shadow-2xl w-full max-w-md rounded-lg p-8 border border-gray-200 bg-white">
         <div className="text-center mb-6">
           <Title level={1} className="text-[#0072BB] font-normal">
-            <span className='text-[#8AC441] underline'>Welcome</span> 
+            <span className='text-[#8AC441] underline'>Welcome</span>
             <span className='text-[#0072BB] underline'> Back</span>
           </Title>
           <Paragraph className="text-gray-600">
