@@ -1,10 +1,11 @@
 import React from "react";
-import { Menu, Dropdown, Button, Image, notification } from "antd";
+import { Menu, Dropdown, Button, Image, notification, Layout } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import { AppRoutes } from "../../constants/constant";
 import axios from "axios";
+import Sider from "antd/es/layout/Sider";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -70,57 +71,44 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="bg-gray-300 shadow-md">
-        <div className="container mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <div>
-            <Image
-              src="https://student.saylaniwelfare.com/assets/logo-OpazD70S.png"
-              height={60}
-              preview={false}
-            />
-          </div>
-
-          {/* Menu for larger screens */}
-          <div className="hidden md:flex space-x-6">
-            <Link
-              to={"dashboard"}
-              className="text-gray-700 text-lg font-semibold hover:text-blue-600 transition-colors"
-            >
-              Dashboard
-            </Link>
-
-            <Link
-              to={"myloans"}
-              className="text-gray-700 text-lg font-semibold hover:text-blue-600 transition-colors"
-            >
-              My Loans
-            </Link>
-
-            <Button
-              onClick={handleLogout}
-              style={{
-                background: "red",
-                color: "#fff",
-                fontSize: "16px",
-                fontWeight: "inherit",
-                width: "80px",
-              }}
-            >
-              Logout
-            </Button>
-          </div>
-
-          {/* Dropdown for smaller screens */}
-          <div className="md:hidden">
-            <Dropdown overlay={menu} trigger={["click"]} placement="bottomRight">
-              <Button type="text" className="text-gray-700 text-lg font-semibold flex items-center">
-                Menu <DownOutlined className="ml-2" />
-              </Button>
-            </Dropdown>
-          </div>
+      <Layout style={{ minHeight: "100vh" }}>
+      {/* Sidebar */}
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="0"
+        style={{
+          background: "linear-gradient(135deg, #0072BB 0%, #0091D5 100%)",
+          color: "#fff",
+        }}
+      >
+        <div className="logo" style={{ padding: "20px", textAlign: "center", color: "#fff", fontSize: "20px", fontWeight: "bold" }}>
+          Loan Dashboard
         </div>
-      </nav>
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]} style={{ background: "transparent" }}>
+          <Menu.Item key="1" icon={<UserOutlined />}>
+            My Profile
+          </Menu.Item>
+          <Menu.Item key="2" icon={<FileTextOutlined />}>
+            Loan Applications
+          </Menu.Item>
+          <Menu.Item key="3" icon={<DollarCircleOutlined />}>
+            Loan Status
+          </Menu.Item>
+          <Menu.Item key="4" icon={<LogoutOutlined />} style={{ marginTop: "200px", color: "#ff4d4f" }}>
+            Logout
+          </Menu.Item>
+        </Menu>
+      </Sider>
+
+      <Layout>
+        {/* Header */}
+        <Header style={{ backgroundColor: "#fff", padding: "20px", boxShadow: "0px 2px 10px rgba(0,0,0,0.1)" }}>
+          <Title level={3} style={{ color: "#0072BB", margin: 0, fontSize: "24px" }}>
+            Welcome, User
+          </Title>
+        </Header>
+      </Layout>
+    </Layout>
 
       {/* Main content */}
       <main className="bg-gray-100 min-h-screen">

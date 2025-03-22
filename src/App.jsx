@@ -34,9 +34,9 @@ function App() {
       {/* Private Routes */}
       <Route path="/user" element={<PrivateRoute />}>
         <Route element={<UserNavbar />}>
-          <Route path="dashboard" element={<UserDashboard />} />
           <Route path="myloans" element={<UserLoans />} />
           <Route path="loandetails/:id" element={<LoanDetails />} />
+          <Route path="dashboard" element={<UserDashboard />} />
         </Route>
       </Route>
     </Routes>

@@ -4,7 +4,7 @@
 const devUrl = 'http://localhost:4000/';
 const prodUrl = 'https://hackathone-backend-repo.vercel.app/';
 
-export const BASE_URL = prodUrl
+export const BASE_URL = devUrl
 
 export const AppRoutes = {
     login: BASE_URL + "auth/login",   
