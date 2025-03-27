@@ -79,7 +79,7 @@ const Navbar = () => {
               <Link to={"/user/dashboard"}>Dashboard</Link>
             </Menu.Item>
             <Menu.Item key="2" icon={<FileTextOutlined />}>
-              Loan Applications
+              <Link to={"/user/applyForLoan"}>Apply For Loan</Link>
             </Menu.Item>
             <Menu.Item key="3" icon={<DollarCircleOutlined />}>
               Loan Status

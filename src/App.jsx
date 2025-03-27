@@ -6,10 +6,9 @@ import Services from './pages/services'
 import ContactUs from './pages/contactUs'
 import UserNavbar from './user/userLayout/userLayout'
 import UserDashboard from './user/userDashboard'
-import UserLoans from './user/userLoans'
-import LoanDetails from './user/loanDetailsPage'
 import Login from './pages/login'
 import Signup from './pages/signUp'
+import LoanApplyForm from './user/loanApplyForm'
 
 // Private Route Component
 const PrivateRoute = () => {
@@ -34,9 +33,8 @@ function App() {
       {/* Private Routes */}
       <Route path="/user" element={<PrivateRoute />}>
         <Route element={<UserNavbar />}>
-          <Route path="myloans" element={<UserLoans />} />
-          <Route path="loandetails/:id" element={<LoanDetails />} />
           <Route path="dashboard" element={<UserDashboard />} />
+          <Route path='applyForLoan' element={<LoanApplyForm />} />
         </Route>
       </Route>
     </Routes>
